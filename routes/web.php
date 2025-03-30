@@ -8,7 +8,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth; 
-
+use App\Http\Controllers\ProfileController;
 // Halaman utama
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +32,12 @@ Route::middleware('auth:masyarakat')->group(function() {
         Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
         Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
     });
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update'); // ✅ Route Update
+    });
+    
 });
 
 /// **Petugas & Admin (Pakai auth:petugas, Cek Level)**
