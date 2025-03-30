@@ -9,6 +9,13 @@
         <a href="{{ route('admin.create') }}" class="bg-green-500 text-white px-4 py-2 rounded">Tambah Petugas</a>
     </div>
 
+    <!-- Notifikasi sukses -->
+    @if(session('success'))
+        <div class="bg-green-500 text-white p-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
     @if(isset($petugas) && $petugas->isEmpty())
         <p class="text-gray-600">Belum ada petugas.</p>
     @elseif(isset($petugas))
