@@ -5,26 +5,67 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\TanggapanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\AdminController;
 
+// Halaman utama
 Route::get('/', function () {
     return view('welcome');
 });
 
+// **Authentication (Login, Register, Logout)**
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// **Masyarakat Only** (Tidak dialihkan setelah login)
 Route::middleware('auth:masyarakat')->group(function() {
-    Route::get('/pengaduan', [PengaduanController::class, 'index']);
-    Route::get('/pengaduan/create', [PengaduanController::class, 'create']);
-    Route::post('/pengaduan', [PengaduanController::class, 'store']);
+    Route::get('/masyarakat/dashboard', function () {
+        return view('masyarakat.dashboard');
+    })->name('masyarakat.dashboard');
+
+    Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+    Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
+    Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
 });
-Route::middleware('auth:petugas')->group(function() {
-    Route::get('/tanggapan', [TanggapanController::class, 'index']);
-    Route::get('/tanggapan/{id}', [TanggapanController::class, 'show']);
-    Route::post('/tanggapan/{id}/verify', [TanggapanController::class, 'verify']);
-    Route::post('/tanggapan/{id}', [TanggapanController::class, 'store']);
+
+/// **Petugas & Admin (Pakai auth:petugas, Cek Level)**
+Route::middleware('auth:petugas')->group(function () {
+    Route::get('/petugas/dashboard', function () {
+        return view('petugas.dashboard');
+    })->name('petugas.dashboard');
+
+    Route::get('/admin/dashboard', function () {
+        $user = Auth::guard('petugas')->user();
+        if ($user->level !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses ditolak!');
+        }
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    Route::get('/tanggapan', [TanggapanController::class, 'index'])->name('tanggapan.index');
+    Route::get('/tanggapan/{id}', [TanggapanController::class, 'show'])->name('tanggapan.show');
+    Route::patch('/tanggapan/{id}/verify', [TanggapanController::class, 'verify'])->name('tanggapan.verify');
+    Route::post('/tanggapan/{id}', [TanggapanController::class, 'store'])->name('tanggapan.store');
+
+    Route::get('/admin/tambah', [AdminController::class, 'create'])
+        ->name('admin.create');
+    Route::post('/admin/store', [AdminController::class, 'store'])
+        ->name('admin.store');
+
+    Route::get('/petugas', [PetugasController::class, 'index'])
+        ->name('petugas.index');
+    Route::get('/petugas/tambah', [PetugasController::class, 'create'])
+        ->name('petugas.create');
+    Route::post('/petugas', [PetugasController::class, 'store'])
+        ->name('petugas.store');
 });
-Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-Route::get('/laporan/pdf', [LaporanController::class, 'generatePDF'])->name('laporan.pdf');
+
+
+// **Laporan (Bisa diakses oleh semua user yang login)**
+Route::middleware('auth')->group(function() {
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/pdf', [LaporanController::class, 'generatePDF'])->name('laporan.pdf');
+});

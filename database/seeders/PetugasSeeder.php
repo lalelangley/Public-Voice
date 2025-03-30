@@ -10,22 +10,44 @@ class PetugasSeeder extends Seeder
 {
     public function run()
     {
+        // Admin tidak memiliki divisi
         Petugas::create([
             'nama' => 'Admin Public Voice',
             'username' => 'admin',
             'password' => Hash::make('admin123'),
             'telp' => '081234567890',
             'level' => 'admin',
-            'divisi' => 'admin', // Admin tidak perlu divisi
+            'divisi' => null, // Admin tidak perlu divisi
         ]);
 
+        // Petugas divisi Kriminal
         Petugas::create([
-            'nama' => 'p1',
-            'username' => 'p1',
-            'password' => Hash::make('p123456'),
-            'telp' => '081234567890',
+            'nama' => 'Petugas Kriminal',
+            'username' => 'petugas_kriminal',
+            'password' => Hash::make('kriminal123'),
+            'telp' => '081234567891',
             'level' => 'petugas',
-            'divisi' => 'lingkungan', // Admin tidak perlu divisi
+            'divisi' => 'kriminal',
+        ]);
+
+        // Petugas divisi Bencana Alam
+        Petugas::create([
+            'nama' => 'Petugas Bencana',
+            'username' => 'petugas_bencana',
+            'password' => Hash::make('bencana123'),
+            'telp' => '081234567892',
+            'level' => 'petugas',
+            'divisi' => 'bencana',
+        ]);
+
+        // Petugas divisi Fasilitas Rusak
+        Petugas::create([
+            'nama' => 'Petugas Fasilitas',
+            'username' => 'petugas_fasilitas',
+            'password' => Hash::make('fasilitas123'),
+            'telp' => '081234567893',
+            'level' => 'petugas',
+            'divisi' => 'fasilitas',
         ]);
     }
 }

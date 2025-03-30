@@ -2,13 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Masyarakat extends Authenticatable {
-    use HasFactory;
-
+class Masyarakat extends Authenticatable
+{
     protected $table = 'masyarakat';
-    protected $fillable = ['nik', 'nama', 'username', 'password', 'telp'];
+    protected $primaryKey = 'id_masyarakat';
+
+    protected $fillable = [
+        'nik', 'nama', 'username', 'password', 'telp',
+    ];
+
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
 }
+
