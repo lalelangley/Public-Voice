@@ -48,6 +48,7 @@ Route::middleware('auth:petugas')->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
+    Route::get('/tanggapan/{id}/create', [TanggapanController::class, 'create'])->name('tanggapan.create');
     Route::get('/tanggapan', [TanggapanController::class, 'index'])->name('tanggapan.index');
     Route::get('/tanggapan/{id}', [TanggapanController::class, 'show'])->name('tanggapan.show');
     Route::patch('/tanggapan/{id}/verify', [TanggapanController::class, 'verify'])->name('tanggapan.verify');

@@ -17,4 +17,11 @@ class Pengaduan extends Model
         'foto',
         'status',
     ];    
+        public function masyarakat(){
+        return $this->belongsTo(Masyarakat::class, 'id_masyarakat', 'id_masyarakat');
+    }   
+    public function tanggapan()
+    {
+        return $this->hasOne(Tanggapan::class);
+    }
 }

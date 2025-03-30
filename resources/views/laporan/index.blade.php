@@ -9,7 +9,12 @@
 </head>
 <body class="bg-light">
     <div class="container mt-5">
-        <h1 class="mb-4">Laporan Pengaduan</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Laporan Pengaduan</h1>
+            <a href="{{ route('petugas.dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-home"></i> Kembali ke Dashboard
+            </a>
+        </div>
 
         <a href="{{ route('laporan.pdf') }}" class="btn btn-danger mb-3">
             <i class="fas fa-file-pdf"></i> Download PDF
@@ -20,17 +25,26 @@
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
+                        <th>Foto</th>
                         <th>Nama Pelapor</th>
                         <th>Isi Laporan</th>
                         <th>Status</th>
                         <th>Tanggal Pengaduan</th>
+                        <th>Tanggapan</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($pengaduan as $key => $item)
                     <tr>
                         <td>{{ $key+1 }}</td>
-                        <td>{{ $item->masyarakat->nama }}</td>
+                        <td>
+                            @if($item->foto)
+                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto Pengaduan" class="img-thumbnail" width="80">
+                            @else
+                                <span class="text-muted">Tidak ada foto</span>
+                            @endif
+                        </td>
+                        <td>{{ $item->masyarakat?->nama ?? 'Tidak diketahui' }}</td>
                         <td>{{ $item->isi_laporan }}</td>
                         <td>
                             @if($item->status == 'proses')
@@ -42,6 +56,11 @@
                             @endif
                         </td>
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</td>
+                        <td>
+                            <a href="{{ route('tanggapan.create', $item->id) }}" class="btn btn-primary">
+                                Beri Tanggapan
+                            </a>
+                        </td>                        
                     </tr>
                     @endforeach
                 </tbody>

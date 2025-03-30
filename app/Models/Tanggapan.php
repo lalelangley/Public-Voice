@@ -1,11 +1,19 @@
 <?php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tanggapan extends Model
 {
-    //
-    protected $table = 'tanggapan';
+    use HasFactory;
+
+    protected $table = 'tanggapan'; // Pastikan pakai nama tabel yang benar
+    protected $fillable = ['id_pengaduan', 'tgl_tanggapan', 'tanggapan', 'id_petugas'];
+
+    public $timestamps = true;
+    public function pengaduan()
+    {
+        return $this->belongsTo(Pengaduan::class);
+    }
 }
