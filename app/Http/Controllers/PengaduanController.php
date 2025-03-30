@@ -4,53 +4,54 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Models\Pengaduan;
 use App\Models\Masyarakat;
+use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
-    public function index() {
-        // Pastikan menggunakan session key yang konsisten
-        $masyarakat = session('masyarakat');
-        
-        if (!$masyarakat) {
-            return redirect('/login')->with('error', 'Silakan login terlebih dahulu');
-        }
-
-        $pengaduan = Pengaduan::where('id_masyarakat', $masyarakat->id_masyarakat)->get();
+    public function index()
+    {
+        $pengaduan = Pengaduan::all(); // Ambil semua data tanpa filter
         return view('pengaduan.index', compact('pengaduan'));
     }
+    
 
-    public function create() {
+    public function create()
+    {
         return view('pengaduan.create');
     }
 
-    public function store(Request $request) {
-        $request->validate([
-            'judul' => 'required', // Tambahkan validasi untuk judul
-            'isi_laporan' => 'required',
-            'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+    
+public function store(Request $request) {
+    $masyarakat = Auth::guard('masyarakat')->user(); // Pakai Auth
 
-        $masyarakat = session('masyarakat');
-        
-        if (!$masyarakat) {
-            return back()->with('error', 'Silakan login terlebih dahulu');
-        }
-
-        $fileName = null;
-        if ($request->hasFile('foto')) {
-            $fileName = $request->file('foto')->store('pengaduan', 'public');
-        }
-
-        Pengaduan::create([
-            'id_masyarakat' => $masyarakat->id_masyarakat,
-            'judul' => $request->judul,
-            'isi_laporan' => $request->isi_laporan,
-            'foto' => $fileName,
-            'status' => 'pending', // Sesuaikan dengan enum di migrasi
-        ]);
-
-        return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
+    if (!$masyarakat) {
+        return back()->with('error', 'Silakan login terlebih dahulu');
     }
+
+    $request->validate([
+        'judul' => 'required',
+        'isi_laporan' => 'required',
+        'kategori' => 'required',
+        'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    $fileName = null;
+    if ($request->hasFile('foto')) {
+        $fileName = $request->file('foto')->store('pengaduan', 'public');
+    }
+
+    Pengaduan::create([
+        'id_masyarakat' => $masyarakat->id_masyarakat,
+        'judul' => $request->judul,
+        'isi_laporan' => $request->isi_laporan,
+        'kategori' => $request->kategori,
+        'foto' => $fileName,
+        'status' => 'pending',
+    ]);
+
+    return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
 }
+};

@@ -7,6 +7,7 @@ use App\Http\Controllers\TanggapanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth; 
 
 // Halaman utama
 Route::get('/', function () {
@@ -26,9 +27,11 @@ Route::middleware('auth:masyarakat')->group(function() {
         return view('masyarakat.dashboard');
     })->name('masyarakat.dashboard');
 
-    Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
-    Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
-    Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
+        Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
+    });
 });
 
 /// **Petugas & Admin (Pakai auth:petugas, Cek Level)**
@@ -69,3 +72,4 @@ Route::middleware('auth')->group(function() {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/pdf', [LaporanController::class, 'generatePDF'])->name('laporan.pdf');
 });
+
