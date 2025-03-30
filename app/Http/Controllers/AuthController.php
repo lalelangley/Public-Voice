@@ -71,7 +71,7 @@ class AuthController extends Controller
         Auth::guard('masyarakat')->login($masyarakat);
         $request->session()->regenerate();
 
-        return redirect()->route('masyarakat.dashboard')->with('success', 'Registrasi berhasil.');
+        return redirect('/login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
     // Proses logout

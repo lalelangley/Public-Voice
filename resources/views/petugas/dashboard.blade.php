@@ -11,6 +11,13 @@
         <a href="{{ route('laporan.index') }}" class="btn btn-primary btn-lg">
             <i class="fas fa-eye"></i> Lihat Laporan
         </a>
+
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
     </div>
 </div>
 @endsection
