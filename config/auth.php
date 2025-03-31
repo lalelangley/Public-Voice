@@ -18,7 +18,7 @@ return [
         
         'petugas' => [
             'driver' => 'session',
-            'provider' => 'petugas', // Tambahkan ini!
+            'provider' => 'petugas',
         ],
     ],
 

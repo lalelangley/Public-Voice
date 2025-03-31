@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pengaduan extends Model
 {
     use HasFactory;
-    protected $table = 'pengaduan';
+    protected $table = 'pengaduan'; // Paksa Laravel pakai tabel 'pengaduan'
     protected $fillable = [
         'id_masyarakat',
         'judul',

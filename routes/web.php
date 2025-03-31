@@ -56,9 +56,10 @@ Route::middleware('auth:petugas')->group(function () {
 
     Route::get('/tanggapan/{id}/create', [TanggapanController::class, 'create'])->name('tanggapan.create');
     Route::get('/tanggapan', [TanggapanController::class, 'index'])->name('tanggapan.index');
+    Route::get('/tanggapan/create/{id}', [TanggapanController::class, 'create'])->name('tanggapan.create');
     Route::get('/tanggapan/{id}', [TanggapanController::class, 'show'])->name('tanggapan.show');
-    Route::patch('/tanggapan/{id}/verify', [TanggapanController::class, 'verify'])->name('tanggapan.verify');
-    Route::post('/tanggapan/{id}', [TanggapanController::class, 'store'])->name('tanggapan.store');
+    Route::post('/tanggapan', [TanggapanController::class, 'store'])->name('tanggapan.store'); // Pastikan ada ini!
+
 
     Route::get('/admin/tambah', [AdminController::class, 'create'])
         ->name('admin.create');

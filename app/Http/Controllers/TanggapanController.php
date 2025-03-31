@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pengaduan;
 use App\Models\Tanggapan;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 class TanggapanController extends Controller
 {
     // Menampilkan daftar laporan yang berstatus "proses"
@@ -20,7 +20,12 @@ class TanggapanController extends Controller
 
     // Menampilkan halaman detail laporan dan form tanggapan
     public function create($id) {
-        $pengaduan = Pengaduan::with('masyarakat')->findOrFail($id);
+        $pengaduan = Pengaduan::find($id);
+        
+        if (!$pengaduan) {
+            return redirect()->route('pengaduan.index')->with('error', 'Pengaduan tidak ditemukan.');
+        }
+    
         return view('tanggapan.create', compact('pengaduan'));
     }
 
@@ -43,20 +48,29 @@ class TanggapanController extends Controller
     }
 
     // Menyimpan tanggapan dari petugas
-    public function store(Request $request, $id) {
+    public function store(Request $request)
+    {
         $request->validate([
+            'pengaduan_id' => 'required|exists:pengaduan,id', // Sesuaikan dengan nama tabel yang benar
             'tanggapan' => 'required',
         ]);
     
+        // Simpan tanggapan baru
         Tanggapan::create([
-            'id_pengaduan' => $id,
-            'tgl_tanggapan' => now(),
+            'pengaduan_id' => $request->pengaduan_id,
             'tanggapan' => $request->tanggapan,
-            'id_petugas' => Auth::guard('petugas')->user()->id, // Pastikan pakai guard 'petugas'
+            'tgl_tanggapan' => now(),
+            'id_petugas' => Auth::guard('petugas')->id(),
         ]);
     
-        Pengaduan::where('id', $id)->update(['status' => 'selesai']);
+        // **Update status pengaduan jadi "selesai"**
+        $pengaduan = DB::table('pengaduan')->where('id', $request->pengaduan_id)->first();
+        if ($pengaduan) {
+            DB::table('pengaduan')->where('id', $request->pengaduan_id)->update(['status' => 'selesai']);
+        }
     
-        return redirect()->route('laporan.index')->with('success', 'Tanggapan berhasil dikirim!');
-    }    
+        return redirect()->route('tanggapan.show', $request->pengaduan_id)
+            ->with('success', 'Tanggapan berhasil dikirim dan status diperbarui.');
+    }
+    
 }

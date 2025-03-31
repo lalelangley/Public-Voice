@@ -9,7 +9,7 @@ class Tanggapan extends Model
     use HasFactory;
 
     protected $table = 'tanggapan'; // Pastikan pakai nama tabel yang benar
-    protected $fillable = ['id_pengaduan', 'tgl_tanggapan', 'tanggapan', 'id_petugas'];
+    protected $fillable = ['pengaduan_id', 'tgl_tanggapan', 'tanggapan', 'id_petugas'];
 
     public $timestamps = true;
     public function pengaduan()
