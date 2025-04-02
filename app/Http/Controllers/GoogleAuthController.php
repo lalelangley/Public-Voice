@@ -42,7 +42,7 @@ class GoogleAuthController extends Controller
             }
 
             // Login user
-            Auth::login($masyarakat);
+            Auth::guard('masyarakat')->login($masyarakat);
 
             if (Auth::guard('masyarakat')->check()) {
                 Log::info('User logged in successfully: ', (array) Auth::guard('masyarakat')->user());
@@ -53,7 +53,7 @@ class GoogleAuthController extends Controller
             }   
             
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Gagal login dengan Google!'  . $e->getMessage());
+            return redirect()->route('login')->with('error', 'Gagal login dengan Google!'  /*. $e->getMessage()*/);
         }
     }
 
