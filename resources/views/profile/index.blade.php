@@ -3,6 +3,7 @@
 @section('title', 'Profil Saya')
 
 @section('content')
+
 <div class="container mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
     <h1 class="text-3xl font-bold text-gray-800 mb-4">👤 Profil Saya</h1>
 

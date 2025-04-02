@@ -22,6 +22,6 @@ class Pengaduan extends Model
     }   
     public function tanggapan()
     {
-        return $this->belongsTo(Pengaduan::class, 'pengaduan_id');
-    }
+        return $this->hasOne(Tanggapan::class, 'pengaduan_id');
+    }    
 }

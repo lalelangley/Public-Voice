@@ -12,8 +12,8 @@ class Tanggapan extends Model
     protected $fillable = ['pengaduan_id', 'tgl_tanggapan', 'tanggapan', 'id_petugas'];
 
     public $timestamps = true;
-    public function tanggapan()
+    public function petugas()
     {
-        return $this->belongsTo(Pengaduan::class, 'pengaduan_id');
-    }
+        return $this->belongsTo(Petugas::class, 'id_petugas');
+    }    
 }

@@ -13,17 +13,24 @@ class PengaduanController extends Controller
 {
     public function index()
     {
-        $pengaduan = Pengaduan::all(); // Ambil semua data tanpa filter
+        $pengaduan = Pengaduan::with('tanggapan.petugas')->get(); // Tambahkan 'petugas' di dalam 'tanggapan'
         return view('pengaduan.index', compact('pengaduan'));
     }
+    
     
 
     public function create()
     {
         return view('pengaduan.create');
     }
-
     
+    public function show($id)
+    {
+        $pengaduan = Pengaduan::with('tanggapan')->findOrFail($id);
+        return view('pengaduan.show', compact('pengaduan'));
+    }
+
+
 public function store(Request $request) {
     $masyarakat = Auth::guard('masyarakat')->user(); // Pakai Auth
 
