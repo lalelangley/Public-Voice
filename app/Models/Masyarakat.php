@@ -9,7 +9,7 @@ class Masyarakat extends Authenticatable
     protected $primaryKey = 'id_masyarakat'; 
     public $incrementing = true;
     protected $keyType = 'int';
-    protected $fillable = ['nama', 'email', 'password',  'username','telp', 'foto']; 
+    protected $fillable = ['nama', 'nik', 'email', 'password',  'username','telp', 'foto', 'google_id', 'email']; 
 
     protected $hidden = [
         'password',

@@ -9,6 +9,8 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth; 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GoogleAuthController;
+
 // Halaman utama
 Route::get('/', function () {
     return view('welcome');
@@ -81,3 +83,6 @@ Route::middleware('auth')->group(function() {
     Route::get('/laporan/pdf', [LaporanController::class, 'generatePDF'])->name('laporan.pdf');
 });
 
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google.login');
+Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
+Route::get('logout', [GoogleAuthController::class, 'logout'])->name('logout');

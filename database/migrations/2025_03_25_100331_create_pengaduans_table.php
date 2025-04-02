@@ -8,16 +8,16 @@ return new class extends Migration
 {
     public function up()
 {
-    Schema::create('pengaduans', function (Blueprint $table) {
+    Schema::create('pengaduan', function (Blueprint $table) {
         $table->id();
-        $table->unsignedBigInteger('masyarakat_id');
+        $table->unsignedBigInteger('id_masyarakat');
+        $table->text('judul');
         $table->text('isi_laporan');
-        $table->string('kategori');
         $table->string('status')->default('pending');
         $table->string('foto')->nullable();
         $table->timestamps();
 
-        $table->foreign('masyarakat_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('id_masyarakat')->references('id_masyarakat')->on('masyarakat')->onDelete('cascade');
     });
 }
 

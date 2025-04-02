@@ -41,6 +41,8 @@
             </button>
         </form>
 
+        <a href="{{ route('google.login') }}" class="btn btn-danger">Login dengan Google</a>    
+
         <p class="text-center text-sm text-gray-600 mt-4">
             Belum punya akun? 
             <a href="{{ route('register') }}" class="text-blue-500 hover:underline">Daftar di sini</a>
