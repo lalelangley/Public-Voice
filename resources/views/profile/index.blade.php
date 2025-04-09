@@ -14,7 +14,7 @@
     @endif
 
     <div class="flex items-center space-x-4">
-        <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('images/default.png') }}" 
+        <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('images/user.jpeg') }}" 
             class="w-24 h-24 rounded-full object-cover border" alt="Foto Profil">
         <div>
             <p class="text-lg"><strong>Nama:</strong> {{ Auth::user()->nama }}</p>

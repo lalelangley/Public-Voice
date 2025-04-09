@@ -13,7 +13,7 @@ class PetugasController extends Controller
 {
     public function create()
     {
-        return view('petugas.tambah');
+        return view('admin.create'); // Ganti dari petugas.tambah ke admin.create
     }
 
     public function store(Request $request)

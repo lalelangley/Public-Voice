@@ -28,17 +28,22 @@ class GoogleAuthController extends Controller
                         ->orWhere('email', $googleUser->email)
                         ->first();
 
-            if (!$masyarakat) {
-                // Jika belum ada, buat user baru
-                $masyarakat = Masyarakat::create([
-                    'nik'       => '00000', // NIK otomatis 00000
-                    'nama'      => $googleUser->name,
-                    'username'  => strtolower(str_replace(' ', '', $googleUser->name)) . rand(100, 999),
-                    'email'     => $googleUser->email,
-                    'password'  => Hash::make(uniqid()), // Password random
-                    'telp'      => '00000', // No. telepon otomatis 00000
-                    'google_id' => $googleUser->id,
-                ]);
+                        if ($masyarakat) {
+                            // Kalau user belum punya google_id, update aja
+                            if (!$masyarakat->google_id) {
+                                $masyarakat->update(['google_id' => $googleUser->id]);
+                            }
+                        } else {
+                            // Buat user baru
+                            $masyarakat = Masyarakat::create([
+                                'nik'       => 'GGL' . uniqid(), // NIK unik
+                                'nama'      => $googleUser->name,
+                                'username'  => strtolower(str_replace(' ', '', $googleUser->name)) . rand(100, 999),
+                                'email'     => $googleUser->email,
+                                'password'  => Hash::make(uniqid()), // Password random
+                                'telp'      => '08' . rand(1000000000, 9999999999),
+                                'google_id' => $googleUser->id,
+                            ]);                        
             }
 
             // Login user
@@ -53,8 +58,8 @@ class GoogleAuthController extends Controller
             }   
             
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Gagal login dengan Google!'  /*. $e->getMessage()*/);
-        }
+            return redirect()->route('login')->with('error', 'Gagal login dengan Google! ' . $e->getMessage());
+        }        
     }
 
     // Logout

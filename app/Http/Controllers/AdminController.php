@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Role;
@@ -6,22 +7,22 @@ use App\Models\User;
 use App\Models\Petugas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        // Ambil semua petugas berdasarkan role_id
         $role = Role::where('name', 'petugas')->first();
+    
         if (!$role) {
             return redirect()->route('admin.dashboard')->with('error', 'Role petugas tidak ditemukan.');
         }
-
+    
         $petugas = User::where('role_id', $role->id)->get();
-
+    
         return view('admin.dashboard', compact('petugas'));
     }
+    
 
     public function create()
     {
@@ -31,7 +32,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255', // Ubah dari 'name' ke 'nama'
+            'nama' => 'required|string|max:255',
             'username' => 'required|string|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
@@ -39,14 +40,12 @@ class AdminController extends Controller
             'divisi' => 'required|string|max:255',
         ]);
 
-        // Cek role 'petugas'
         $role = Role::where('name', 'petugas')->first();
         if (!$role) {
             return redirect()->back()->with('error', 'Role petugas tidak ditemukan');
         }
 
-        // Simpan ke tabel 'petugas'
-        $petugas = Petugas::create([
+        Petugas::create([
             'nama' => $request->nama,
             'username' => $request->username,
             'password' => Hash::make($request->password),
@@ -55,9 +54,8 @@ class AdminController extends Controller
             'divisi' => $request->divisi,
         ]);
 
-        // Simpan ke tabel 'users'
         User::create([
-            'name' => $request->nama, // Sesuaikan dengan Petugas
+            'name' => $request->nama,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -65,5 +63,55 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.dashboard')->with('success', 'Petugas berhasil ditambahkan');
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|unique:users,username,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+            'telp' => 'nullable|string|max:15',
+            'divisi' => 'nullable|string|max:255',
+        ]);
+    
+        $user = User::findOrFail($id);
+        $user->update([
+            'name' => $request->nama,
+            'username' => $request->username,
+            'email' => $request->email,
+        ]);
+    
+        $petugas = Petugas::where('username', $user->username)->first();
+        if ($petugas) {
+            $petugas->update([
+                'nama' => $request->nama,
+                'username' => $request->username,
+                'telp' => $request->telp,
+                'divisi' => $request->divisi,
+            ]);
+        }
+    
+        return redirect()->route('admin.dashboard')->with('success', 'Data petugas berhasil diperbarui');
+    }    
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $petugas = Petugas::where('username', $user->username)->first();
+
+        if ($petugas) {
+            $petugas->delete();
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Petugas berhasil dihapus');
     }
 }
