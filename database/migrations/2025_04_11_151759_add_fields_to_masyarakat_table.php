@@ -7,8 +7,15 @@ class AddFieldsToMasyarakatTable extends Migration
 {
     public function up()
     {
+
         Schema::table('masyarakat', function (Blueprint $table) {
+            $table->string('tempat_tinggal')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->string('pekerjaan')->nullable();
+            $table->string('disabilitas')->nullable();
         });
+        
     }
 
     public function down()
