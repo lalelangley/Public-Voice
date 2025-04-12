@@ -125,7 +125,8 @@
                             </button>
                         </form>
                     </div>
-                    <a href="#" class="flex items-center space-x-1 text-gray-700 hover:text-blue-600">
+                    <a href="{{ route('pengaduan.download', $p->id) }}"
+                    class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-xs">
                         ⬇ Download Laporan
                     </a>
                 </div>

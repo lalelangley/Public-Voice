@@ -111,3 +111,9 @@ Route::post('/pengaduan/{id}/like', [LikePengaduanController::class, 'toggle'])-
 // Komentar pengaduan
 // ========================
 Route::post('/pengaduan/{id}/komentar', [KomentarPengaduanController::class, 'store'])->name('pengaduan.komentar');
+
+
+// ========================
+// Download pengaduan
+// ========================
+Route::get('/pengaduan/{id}/download', [PengaduanController::class, 'download'])->name('pengaduan.download');

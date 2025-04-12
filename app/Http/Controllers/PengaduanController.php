@@ -9,6 +9,7 @@ use App\Models\Pengaduan;
 use App\Models\Masyarakat;
 use Illuminate\Support\Facades\Auth;
 use App\Models\LikePengaduan;
+use PDF;
 
 class PengaduanController extends Controller
 {
@@ -21,8 +22,6 @@ class PengaduanController extends Controller
         return view('pengaduan.index', compact('pengaduan'));
     }
     
-    
-
     public function create()
     {
         return view('pengaduan.create');
@@ -93,5 +92,11 @@ class PengaduanController extends Controller
         return back();
     }
     
+    public function download($id)
+    {
+        $pengaduan = Pengaduan::with('masyarakat')->findOrFail($id);
 
+        $pdf = PDF::loadView('pengaduan.pdf', compact('pengaduan'));
+        return $pdf->download('Laporan-Pengaduan-' . $pengaduan->id . '.pdf');
+    }
 };
