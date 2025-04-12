@@ -27,6 +27,7 @@
             <thead>
                 <tr class="bg-blue-600 text-white text-left">
                     <th class="px-6 py-3">Tanggal</th>
+                    <th class="px-6 py-3">Nama Pengadu</th>
                     <th class="px-6 py-3">Judul</th>
                     <th class="px-6 py-3">Isi Laporan</th>
                     <th class="px-6 py-3">Foto</th>
@@ -37,7 +38,14 @@
             <tbody class="bg-blue-50">
                 @foreach ($pengaduan as $p)
                     <tr class="border-b hover:bg-blue-100 transition">
-                        <td class="px-6 py-4 text-blue-700 whitespace-nowrap">{{ $p->created_at->format('d M Y, H:i') }}</td>
+                        <td class="px-6 py-4 text-blue-700 whitespace-nowrap">{{ $p->created_at->format('d M Y') }}</td>
+                        <td class="px-6 py-4 text-blue-700 font-medium">
+                            @if ($p->anonim)
+                                <span class="italic text-gray-500">Dirahasiakan</span>
+                            @else
+                                {{ $p->masyarakat->nama ?? 'Tidak Diketahui' }}
+                            @endif
+                        </td>
                         <td class="px-6 py-4 font-bold text-blue-800">{{ $p->judul }}</td>
                         <td class="px-6 py-4 text-blue-600">{{ Str::limit($p->isi_laporan, 50) }}</td>
                         <td class="px-6 py-4">
