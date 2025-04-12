@@ -27,6 +27,12 @@ class ProfileController extends Controller
             'username' => 'required|string|max:255|unique:masyarakat,username,' . $user->id_masyarakat . ',id_masyarakat',
             'telp' => 'nullable|string|max:15',
             'foto' => 'nullable|image|max:2048', // Maks 2MB
+            'bio' => 'nullable|string',
+            'email' => 'required|email|unique:masyarakat,email,' . $user->id_masyarakat . ',id_masyarakat',
+            'tanggal_lahir' => 'nullable|date',
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'pekerjaan' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -42,6 +48,12 @@ class ProfileController extends Controller
         $user->nama = $request->nama;
         $user->username = $request->username;
         $user->telp = $request->telp;
+        $user->bio = $request->bio;
+        $user->email = $request->email;
+        $user->tanggal_lahir = $request->tanggal_lahir;
+        $user->jenis_kelamin = $request->jenis_kelamin;
+        $user->pekerjaan = $request->pekerjaan;
+        $user->tempat_tinggal = $request->tempat_tinggal;
         $user->save();
 
         return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui!');
