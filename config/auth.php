@@ -37,14 +37,14 @@ return [
     'passwords' => [
         'petugas' => [
             'provider' => 'petugas',
-            'table' => 'password_resets',
+            'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],
 
         'masyarakat' => [
             'provider' => 'masyarakat',
-            'table' => 'password_resets',
+            'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],

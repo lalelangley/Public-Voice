@@ -8,6 +8,7 @@ use App\Models\Masyarakat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GoogleAuthController extends Controller
 {
@@ -36,7 +37,7 @@ class GoogleAuthController extends Controller
                         } else {
                             // Buat user baru
                             $masyarakat = Masyarakat::create([
-                                'nik'       => 'GGL' . uniqid(), // NIK unik
+                                'nik' => Str::uuid(), // NIK unik
                                 'nama'      => $googleUser->name,
                                 'username'  => strtolower(str_replace(' ', '', $googleUser->name)) . rand(100, 999),
                                 'email'     => $googleUser->email,

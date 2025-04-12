@@ -6,22 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up()
     {
-        Schema::table('petugas', function (Blueprint $table) {
-            if (!Schema::hasColumn('petugas', 'divisi')) {
-                $table->string('divisi')->nullable()->after('level');
-            }
+        Schema::table('masyarakat', function (Blueprint $table) {
+            $table->string('nik')->default('NIK_DEFAULT_VALUE')->change();  // Set default value
         });
     }
     
-
     public function down()
     {
         Schema::table('masyarakat', function (Blueprint $table) {
-            $table->dropColumn('google_id');
-            $table->dropColumn('email');
+            $table->string('nik')->nullable(false)->change();  // Hapus default value
         });
     }
-
+    
 };

@@ -10,11 +10,14 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('petugas', function (Blueprint $table) {
-        $table->string('divisi')->nullable()->after('level');
-    });
-}
+    {
+        Schema::table('petugas', function (Blueprint $table) {
+            if (!Schema::hasColumn('petugas', 'divisi')) {
+                $table->string('divisi')->nullable()->after('level');
+            }
+        });
+    }
+    
 
 
     /**

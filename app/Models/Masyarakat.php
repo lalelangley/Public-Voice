@@ -25,10 +25,23 @@ class Masyarakat extends Authenticatable
         'pekerjaan',
         'disabilitas',
         'email',
+        'token',
+        'google_id',
+        'foto',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+  
+    public function findByEmail($email)
+    {
+     return Masyarakat::where('email', $email)->first();
+    }
+    public function getAuthIdentifierName()
+    {
+        return 'email';
+    }
+
 }

@@ -6,22 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up()
     {
-        Schema::table('petugas', function (Blueprint $table) {
-            if (!Schema::hasColumn('petugas', 'divisi')) {
-                $table->string('divisi')->nullable()->after('level');
+        Schema::table('masyarakat', function (Blueprint $table) {
+            if (!Schema::hasColumn('masyarakat', 'google_id')) {
+                $table->string('google_id')->nullable()->after('id_masyarakat');
             }
         });
     }
     
-
     public function down()
     {
         Schema::table('masyarakat', function (Blueprint $table) {
             $table->dropColumn('google_id');
-            $table->dropColumn('email');
         });
     }
-
+    
 };

@@ -10,6 +10,11 @@
 
     <div class="bg-white p-6 rounded-lg shadow-md w-96">
         <h2 class="text-2xl font-bold text-center mb-4">Login</h2>
+        @if (session('status'))
+    <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
+        {{ session('status') }}
+    </div>
+    @endif
 
         @if(session('error'))
             <div class="bg-red-200 p-3 rounded text-red-800 mb-4">
@@ -41,9 +46,15 @@
             </button>
         </form>
 
-        <a href="{{ route('google.login') }}" class="btn btn-danger">Login dengan Google</a>    
+        <a href="{{ route('google.login') }}" class="block w-full text-center bg-red-500 text-white py-2 rounded-lg mt-3 hover:bg-red-600 transition duration-200">
+            Login dengan Google
+        </a>    
 
         <p class="text-center text-sm text-gray-600 mt-4">
+            <a href="{{ route('password.request') }}" class="text-blue-500 hover:underline">Lupa Password?</a>
+        </p>
+
+        <p class="text-center text-sm text-gray-600 mt-2">
             Belum punya akun? 
             <a href="{{ route('register') }}" class="text-blue-500 hover:underline">Daftar di sini</a>
         </p>
