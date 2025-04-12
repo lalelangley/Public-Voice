@@ -14,6 +14,7 @@ class PengaduanController extends Controller
     public function index()
     {
         $pengaduan = Pengaduan::with('tanggapan.petugas')->get(); // Tambahkan 'petugas' di dalam 'tanggapan'
+        $pengaduan = Pengaduan::with(['tanggapan.petugas', 'masyarakat'])->get();
         return view('pengaduan.index', compact('pengaduan'));
     }
     
@@ -31,34 +32,40 @@ class PengaduanController extends Controller
     }
 
 
-public function store(Request $request) {
-    $masyarakat = Auth::guard('masyarakat')->user(); // Pakai Auth
-
-    if (!$masyarakat) {
-        return back()->with('error', 'Silakan login terlebih dahulu');
+    public function store(Request $request) {
+        $masyarakat = Auth::guard('masyarakat')->user();
+    
+        if (!$masyarakat) {
+            return back()->with('error', 'Silakan login terlebih dahulu');
+        }
+    
+        $request->validate([
+            'judul' => 'required',
+            'isi_laporan' => 'required',
+            'kategori' => 'required',
+            'tanggal_kejadian' => 'required|date',
+            'lokasi_kejadian' => 'required',
+            'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+    
+        $fileName = null;
+        if ($request->hasFile('foto')) {
+            $fileName = $request->file('foto')->store('pengaduan', 'public');
+        }
+    
+        Pengaduan::create([
+            'id_masyarakat' => $masyarakat->id_masyarakat,
+            'judul' => $request->judul,
+            'isi_laporan' => $request->isi_laporan,
+            'kategori' => $request->kategori,
+            'foto' => $fileName,
+            'tanggal_kejadian' => $request->tanggal_kejadian,
+            'lokasi_kejadian' => $request->lokasi_kejadian,
+            'anonim' => $request->has('anonim'),
+            'status' => 'pending',
+        ]);
+    
+        return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
     }
-
-    $request->validate([
-        'judul' => 'required',
-        'isi_laporan' => 'required',
-        'kategori' => 'required',
-        'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    $fileName = null;
-    if ($request->hasFile('foto')) {
-        $fileName = $request->file('foto')->store('pengaduan', 'public');
-    }
-
-    Pengaduan::create([
-        'id_masyarakat' => $masyarakat->id_masyarakat,
-        'judul' => $request->judul,
-        'isi_laporan' => $request->isi_laporan,
-        'kategori' => $request->kategori,
-        'foto' => $fileName,
-        'status' => 'pending',
-    ]);
-
-    return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
-}
+    
 };

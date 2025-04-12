@@ -10,12 +10,15 @@ return new class extends Migration
 {
     Schema::create('pengaduan', function (Blueprint $table) {
         $table->id();
-        $table->unsignedBigInteger('id_masyarakat');
-        $table->text('judul');
-        $table->text('isi_laporan');
-        $table->string('status')->default('pending');
-        $table->string('foto')->nullable();
-        $table->timestamps();
+            $table->unsignedBigInteger('id_masyarakat');
+            $table->text('judul');
+            $table->text('isi_laporan');
+            $table->string('foto')->nullable();
+            $table->date('tanggal_kejadian');
+            $table->string('lokasi_kejadian');
+            $table->boolean('anonim')->default(false);
+            $table->string('status')->default('pending');
+            $table->timestamps();
 
         $table->foreign('id_masyarakat')->references('id_masyarakat')->on('masyarakat')->onDelete('cascade');
     });
