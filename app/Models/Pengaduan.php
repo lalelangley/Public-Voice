@@ -31,4 +31,8 @@ class Pengaduan extends Model
     {
         return $this->hasMany(LikePengaduan::class, 'pengaduan_id');
     }
+    public function komentar()
+    {
+        return $this->hasMany(\App\Models\KomentarPengaduan::class, 'pengaduan_id');
+    }
 }

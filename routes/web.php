@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\LikePengaduanController;
+use App\Http\Controllers\KomentarPengaduanController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -105,3 +106,8 @@ Route::get('logout', [GoogleAuthController::class, 'logout'])->name('logout');
 // ========================
 Route::post('/pengaduan/{id}/like', [PengaduanController::class, 'like'])->name('pengaduan.like');
 Route::post('/pengaduan/{id}/like', [LikePengaduanController::class, 'toggle'])->name('pengaduan.like');
+
+// ========================
+// Komentar pengaduan
+// ========================
+Route::post('/pengaduan/{id}/komentar', [KomentarPengaduanController::class, 'store'])->name('pengaduan.komentar');

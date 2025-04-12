@@ -17,6 +17,7 @@ class PengaduanController extends Controller
         $pengaduan = Pengaduan::with('tanggapan.petugas')->get(); // Tambahkan 'petugas' di dalam 'tanggapan'
         $pengaduan = Pengaduan::with(['tanggapan.petugas', 'masyarakat'])->get();
         $pengaduan = Pengaduan::with(['tanggapan.petugas', 'masyarakat', 'likes'])->get();
+        $pengaduan = Pengaduan::with(['tanggapan.petugas', 'masyarakat', 'komentar.masyarakat'])->get();
         return view('pengaduan.index', compact('pengaduan'));
     }
     

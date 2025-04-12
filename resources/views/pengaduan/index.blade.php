@@ -72,7 +72,48 @@
                 {{-- Footer --}}
                 <div class="flex items-center justify-between mt-2 text-xs text-gray-600">
                     <div class="flex items-center space-x-2">
-                        <span>💬 0 Komentar</span>
+                    {{-- Tombol Komentar --}}
+                    <div x-data="{ openKomentar: false }" class="mt-2">
+                        <button @click="openKomentar = true"
+                            class="text-xs px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-gray-800 transition">
+                            💬 Lihat Komentar ({{ $p->komentar->count() }})
+                        </button>
+
+                        {{-- Modal Komentar --}}
+                        <div x-show="openKomentar" x-cloak class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                            <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-4 relative">
+                                <button @click="openKomentar = false"
+                                    class="absolute top-2 right-3 text-gray-600 hover:text-red-500 text-xl font-bold">&times;</button>
+
+                                <h2 class="text-sm font-bold text-blue-700 mb-2">💬 Komentar</h2>
+
+                                {{-- Daftar Komentar --}}
+                                <div class="max-h-60 overflow-y-auto mb-2 space-y-2">
+                                    @forelse ($p->komentar as $komentar)
+                                        <div class="text-xs border-b pb-1">
+                                            <span class="font-semibold text-gray-800">{{ $komentar->masyarakat->nama ?? 'Anonim' }}</span>:
+                                            <span class="text-gray-700">{{ $komentar->isi }}</span><br>
+                                            <span class="text-[10px] text-gray-400">{{ $komentar->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    @empty
+                                        <p class="text-xs text-gray-500">Belum ada komentar.</p>
+                                    @endforelse
+                                </div>
+
+                                {{-- Form Komentar --}}
+                                @if(auth('masyarakat')->check())
+                                    <form action="{{ route('pengaduan.komentar', $p->id) }}" method="POST" class="space-y-2">
+                                        @csrf
+                                        <input type="text" name="isi" placeholder="Tulis komentar..." class="w-full text-xs border p-2 rounded" required>
+                                        <button type="submit" class="w-full bg-blue-600 text-white py-1 text-xs rounded hover:bg-blue-700">Kirim</button>
+                                    </form>
+                                @else
+                                    <p class="text-xs text-red-500 mt-2">Login sebagai masyarakat untuk menulis komentar.</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
                         <form action="{{ route('pengaduan.like', $p->id) }}" method="POST">
                             @csrf
                             @php
