@@ -23,7 +23,7 @@ class PetugasSeeder extends Seeder
         // Petugas divisi Kriminal
         Petugas::create([
             'nama' => 'Petugas Kriminal',
-            'username' => 'petugas_kriminal',
+            'username' => ' ',
             'password' => Hash::make('kriminal123'),
             'telp' => '081234567891',
             'level' => 'petugas',
