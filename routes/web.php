@@ -98,3 +98,9 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google.login');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
 Route::get('logout', [GoogleAuthController::class, 'logout'])->name('logout');
+
+// ========================
+// Like pengaduan
+// ========================
+Route::post('/pengaduan/{id}/like', [PengaduanController::class, 'like'])->name('pengaduan.like');
+

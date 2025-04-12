@@ -73,7 +73,12 @@
                 <div class="flex items-center justify-between mt-2 text-xs text-gray-600">
                     <div class="flex items-center space-x-2">
                         <span>💬 0 Komentar</span>
-                        <span>👍 0 Dukungan</span>
+                    <form action="{{ route('pengaduan.like', $p->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="hover:text-blue-600">
+                            👍 {{ $p->likes->count() }} Dukungan
+                        </button>
+                    </form>
                     </div>
                     <a href="#" class="flex items-center space-x-1 text-gray-700 hover:text-blue-600">
                         ⬇ Download Laporan

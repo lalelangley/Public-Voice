@@ -27,4 +27,8 @@ class Pengaduan extends Model
     {
         return $this->hasOne(Tanggapan::class, 'pengaduan_id');
     }    
+    public function likes()
+    {
+        return $this->hasMany(LikePengaduan::class, 'pengaduan_id');
+    }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Pengaduan;
 use App\Models\Masyarakat;
 use Illuminate\Support\Facades\Auth;
+use App\Models\LikePengaduan;
 
 class PengaduanController extends Controller
 {
@@ -15,6 +16,7 @@ class PengaduanController extends Controller
     {
         $pengaduan = Pengaduan::with('tanggapan.petugas')->get(); // Tambahkan 'petugas' di dalam 'tanggapan'
         $pengaduan = Pengaduan::with(['tanggapan.petugas', 'masyarakat'])->get();
+        $pengaduan = Pengaduan::with(['tanggapan.petugas', 'masyarakat', 'likes'])->get();
         return view('pengaduan.index', compact('pengaduan'));
     }
     
@@ -68,4 +70,27 @@ class PengaduanController extends Controller
         return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
     }
     
+    public function like($id)
+    {
+        $masyarakat = Auth::guard('masyarakat')->user();
+    
+        if (!$masyarakat) {
+            return back()->with('error', 'Silakan login terlebih dahulu.');
+        }
+    
+        $alreadyLiked = LikePengaduan::where('pengaduan_id', $id)
+            ->where('masyarakat_id', $masyarakat->id_masyarakat)
+            ->exists();
+    
+        if (!$alreadyLiked) {
+            LikePengaduan::create([
+                'pengaduan_id' => $id,
+                'masyarakat_id' => $masyarakat->id_masyarakat,
+            ]);
+        }
+    
+        return back();
+    }
+    
+
 };
