@@ -14,6 +14,29 @@
         </a>
     </div>
 
+    {{-- Tab Filter --}}
+    <div class="flex space-x-4 border-b border-gray-200 mb-6">
+        @php
+            $tabs = [
+                'semua' => 'Semua',
+                'pending' => 'Belum',
+                'proses' => 'Proses',
+                'selesai' => 'Selesai',
+            ];
+        @endphp
+
+        @foreach ($tabs as $key => $label)
+            @php
+                $isActive = ($status == $key || ($key == 'semua' && !$status));
+            @endphp
+            <a href="{{ $key == 'semua' ? url('/pengaduan') : url('/pengaduan?status=' . $key) }}"
+                class="pb-2 {{ $isActive ? 'border-b-4 border-gray-500 font-semibold text-gray-900' : 'text-gray-500 hover:text-blue-600' }}">
+                {{ $label }}
+            </a>
+        @endforeach
+    </div>
+
+
     {{-- Notifikasi --}}
     @if(session('success'))
         <div class="bg-green-500 text-white p-4 rounded-lg mb-4 shadow-md">
