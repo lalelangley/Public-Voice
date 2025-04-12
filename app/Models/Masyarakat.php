@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 class Masyarakat extends Authenticatable
@@ -10,14 +10,25 @@ class Masyarakat extends Authenticatable
     use Notifiable;
 
     protected $table = 'masyarakat';
-    protected $primaryKey = 'id_masyarakat'; // Pastikan primary key benar
+    protected $primaryKey = 'id_masyarakat';
     public $timestamps = true;
 
     protected $fillable = [
-        'nama', 'nik', 'email', 'password', 'username', 'telp', 'foto', 'google_id'
+        'nik',
+        'nama',
+        'username',
+        'password',
+        'telp',
+        'tempat_tinggal',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'pekerjaan',
+        'disabilitas',
+        'email',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 }

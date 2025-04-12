@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Masyarakat;
 use App\Models\Petugas;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    
     // Menampilkan halaman login
     public function showLoginForm()
     {
@@ -22,7 +22,7 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-    
+
     // Proses login
     public function login(Request $request)
     {
@@ -30,48 +30,64 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
-    
+
         if (Auth::guard('masyarakat')->attempt(['username' => $request->username, 'password' => $request->password])) {
             return redirect()->route('masyarakat.dashboard');
         }
-    
+
         if (Auth::guard('petugas')->attempt(['username' => $request->username, 'password' => $request->password])) {
             $petugas = Auth::guard('petugas')->user();
-        
+
             if ($petugas->level == 'admin') {
                 return redirect()->route('admin.dashboard');
             } elseif ($petugas->level == 'petugas') {
                 return redirect()->route('petugas.dashboard');
             }
         }
-        
-    
+
         return back()->withErrors(['username' => 'Username atau password salah']);
     }
-    
+
     // Proses registrasi
     public function register(Request $request)
     {
-        $request->validate([
-            'nik' => 'required|unique:masyarakat,nik',
-            'nama' => 'required',
-            'username' => 'required|unique:masyarakat,username',
-            'password' => 'required|min:6',
-            'telp' => 'required|max:15',
+        $validator = Validator::make($request->all(), [
+            'nik' => 'required|numeric|unique:masyarakat,nik',
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:masyarakat,username',
+            'password' => 'required|string|min:6|confirmed',
+            'telp' => 'required|string|max:20',
+            'tempat_tinggal' => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'pekerjaan' => 'required|string',
+            'disabilitas' => 'required|string',
+            'email' => 'required|email|unique:masyarakat,email',
         ]);
 
-        $masyarakat = Masyarakat::create([
-            'nik' => $request->nik,
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'telp' => $request->telp,
-        ]);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
 
-        Auth::guard('masyarakat')->login($masyarakat);
-        $request->session()->regenerate();
+        try {
+            Masyarakat::create([
+                'nik' => $request->nik,
+                'nama' => $request->nama,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'telp' => $request->telp,
+                'tempat_tinggal' => $request->tempat_tinggal,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'pekerjaan' => $request->pekerjaan,
+                'disabilitas' => $request->disabilitas,
+                'email' => $request->email,
+            ]);
 
-        return redirect('/login')->with('success', 'Registrasi berhasil! Silakan login.');
+            return redirect()->route('login')->with('success', 'Akun berhasil dibuat. Silakan login!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat registrasi: ' . $e->getMessage());
+        }
     }
 
     // Proses logout

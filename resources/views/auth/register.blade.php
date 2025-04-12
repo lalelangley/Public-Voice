@@ -1,60 +1,121 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<form action="{{ route('register') }}" method="POST" class="space-y-4">
+    @csrf  
 
-    <div class="bg-white p-6 rounded-lg shadow-md w-96">
-        <h2 class="text-2xl font-bold text-center mb-4">Register</h2>
+    @if (session('success'))
+        <div class="bg-green-100 text-green-800 p-3 rounded-lg text-center">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        <!-- Notifikasi Berhasil -->
-        @if(session('success'))
-            <div class="bg-green-200 p-3 rounded text-green-800 mb-4 text-center">
-                {{ session('success') }}
-            </div>
-        @endif
+    @if (session('error'))
+        <div class="bg-red-100 text-red-800 p-3 rounded-lg text-center">
+            {{ session('error') }}
+        </div>
+    @endif
 
-        <form action="/register" method="POST" class="space-y-4">
-            @csrf  
+    @if ($errors->any())
+        <div class="bg-red-100 text-red-800 p-3 rounded-lg">
+            <ul class="list-disc pl-5 space-y-1 text-sm">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">NIK</label>
-                <input type="text" name="nik" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan NIK" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nama</label>
-                <input type="text" name="nama" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan Nama" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" name="username" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan Username" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" name="password" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan Password" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">No Telp</label>
-                <input type="text" name="telp" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan No Telp" required>
-            </div>
-
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">
-                Register
-            </button>
-        </form>
-
-        <p class="text-center text-sm mt-4">
-            Sudah punya akun? <a href="/login" class="text-blue-500 hover:underline">Login di sini</a>
-        </p>
+    <!-- NIK -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">NIK</label>
+        <input type="text" name="nik" value="{{ old('nik') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan NIK" required>
+        @error('nik') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
     </div>
 
-</body>
-</html>
+    <!-- Nama -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Nama</label>
+        <input type="text" name="nama" value="{{ old('nama') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Nama" required>
+        @error('nama') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Username -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Username</label>
+        <input type="text" name="username" value="{{ old('username') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Username" required>
+        @error('username') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Password -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" name="password" class="w-full p-2 border rounded-lg" placeholder="Masukkan Password" required>
+        @error('password') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Konfirmasi Password -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
+        <input type="password" name="password_confirmation" class="w-full p-2 border rounded-lg" placeholder="Ulangi Password" required>
+    </div>
+
+    <!-- No Telp -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">No Telp</label>
+        <input type="text" name="telp" value="{{ old('telp') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan No Telp" required>
+        @error('telp') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Email -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Email (opsional)</label>
+        <input type="email" name="email" value="{{ old('email') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Email">
+        @error('email') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Tempat Tinggal -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Tempat Tinggal</label>
+        <input type="text" name="tempat_tinggal" value="{{ old('tempat_tinggal') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Alamat">
+        @error('tempat_tinggal') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Tanggal Lahir -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+        <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" class="w-full p-2 border rounded-lg">
+        @error('tanggal_lahir') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Jenis Kelamin -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+        <select name="jenis_kelamin" class="w-full p-2 border rounded-lg">
+            <option value="">-- Pilih --</option>
+            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+        </select>
+        @error('jenis_kelamin') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Pekerjaan -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Pekerjaan</label>
+        <input type="text" name="pekerjaan" value="{{ old('pekerjaan') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Pekerjaan">
+        @error('pekerjaan') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Disabilitas -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Disabilitas</label>
+        <select name="disabilitas" class="w-full p-2 border rounded-lg">
+            <option value="">-- Pilih --</option>
+            <option value="1" {{ old('disabilitas') == '1' ? 'selected' : '' }}>Ya</option>
+            <option value="0" {{ old('disabilitas') == '0' ? 'selected' : '' }}>Tidak</option>
+        </select>
+        @error('disabilitas') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">
+        Register
+    </button>
+</form>
