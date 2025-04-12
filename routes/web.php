@@ -10,6 +10,9 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\LikePengaduanController;
+use App\Http\Controllers\KomentarPengaduanController;
+use App\Http\Controllers\ForgotPasswordController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -98,3 +101,32 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google.login');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
 Route::get('logout', [GoogleAuthController::class, 'logout'])->name('logout');
+
+// ========================
+// Like pengaduan
+// ========================
+Route::post('/pengaduan/{id}/like', [PengaduanController::class, 'like'])->name('pengaduan.like');
+Route::post('/pengaduan/{id}/like', [LikePengaduanController::class, 'toggle'])->name('pengaduan.like');
+
+// ========================
+// Komentar pengaduan
+// ========================
+Route::post('/pengaduan/{id}/komentar', [KomentarPengaduanController::class, 'store'])->name('pengaduan.komentar');
+
+
+// ========================
+// Download pengaduan
+// ========================
+Route::get('/pengaduan/{id}/download', [PengaduanController::class, 'download'])->name('pengaduan.download');
+
+// Route untuk menampilkan form forgot password
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+
+// Route untuk mengirimkan link reset password
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+
+// Route untuk menampilkan form reset password menggunakan token
+Route::get('/forgot-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+
+// Route untuk menghandle reset password (POST)
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
