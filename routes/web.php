@@ -44,6 +44,8 @@ Route::middleware('auth:masyarakat')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('profile/change-password', [ProfileController::class, 'changePasswordForm'])->name('profile.change-password-form');
+    Route::post('profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
 });
 
 

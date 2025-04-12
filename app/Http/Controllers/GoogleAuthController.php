@@ -40,7 +40,7 @@ class GoogleAuthController extends Controller
                                 'nama'      => $googleUser->name,
                                 'username'  => strtolower(str_replace(' ', '', $googleUser->name)) . rand(100, 999),
                                 'email'     => $googleUser->email,
-                                'password'  => Hash::make(uniqid()), // Password random
+                                'password' => Hash::make('0000000000000'),
                                 'telp'      => '0000',
                                 'google_id' => $googleUser->id,
                             ]);                        

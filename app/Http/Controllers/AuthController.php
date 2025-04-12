@@ -57,11 +57,11 @@ class AuthController extends Controller
             'username' => 'required|string|max:255|unique:masyarakat,username',
             'password' => 'required|string|min:6|confirmed',
             'telp' => 'required|string|max:20',
-            'tempat_tinggal' => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'pekerjaan' => 'required|string',
-            'disabilitas' => 'required|string',
+            // 'tempat_tinggal' => 'required|string',
+            // 'tanggal_lahir' => 'required|date',
+            // 'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            // 'pekerjaan' => 'required|string',
+            // 'disabilitas' => 'required|string',
             'email' => 'required|email|unique:masyarakat,email',
         ]);
 
@@ -76,11 +76,11 @@ class AuthController extends Controller
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'telp' => $request->telp,
-                'tempat_tinggal' => $request->tempat_tinggal,
-                'tanggal_lahir' => $request->tanggal_lahir,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'pekerjaan' => $request->pekerjaan,
-                'disabilitas' => $request->disabilitas,
+                // 'tempat_tinggal' => $request->tempat_tinggal,
+                // 'tanggal_lahir' => $request->tanggal_lahir,
+                // 'jenis_kelamin' => $request->jenis_kelamin,
+                // 'pekerjaan' => $request->pekerjaan,
+                // 'disabilitas' => $request->disabilitas,
                 'email' => $request->email,
             ]);
 

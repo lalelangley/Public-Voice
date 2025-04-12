@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Masyarakat;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -46,5 +45,31 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    public function changePasswordForm()
+    {
+        $user = Auth::guard('masyarakat')->user();
+
+        return view('profile.change-password');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = Auth::guard('masyarakat')->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Kata sandi saat ini salah.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Kata sandi berhasil diperbarui!');
     }
 }

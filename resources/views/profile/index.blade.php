@@ -30,6 +30,9 @@
         <a href="{{ route('masyarakat.dashboard') }}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
             ⬅️ Kembali ke Dashboard
         </a>
+        <a href="{{ route('profile.change-password-form') }}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
+            🔑 Ganti Kata Sandi
+        </a>
     </div>    
 </div>
 @endsection

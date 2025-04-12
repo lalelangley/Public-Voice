@@ -72,21 +72,21 @@
     </div>
 
     <!-- Tempat Tinggal -->
-    <div>
+    <!-- <div>
         <label class="block text-sm font-medium text-gray-700">Tempat Tinggal</label>
         <input type="text" name="tempat_tinggal" value="{{ old('tempat_tinggal') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Alamat">
         @error('tempat_tinggal') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-    </div>
+    </div> -->
 
     <!-- Tanggal Lahir -->
-    <div>
+    <!-- <div>
         <label class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
         <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" class="w-full p-2 border rounded-lg">
         @error('tanggal_lahir') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-    </div>
+    </div> -->
 
     <!-- Jenis Kelamin -->
-    <div>
+    <!-- <div>
         <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
         <select name="jenis_kelamin" class="w-full p-2 border rounded-lg">
             <option value="">-- Pilih --</option>
@@ -94,17 +94,17 @@
             <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
         </select>
         @error('jenis_kelamin') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-    </div>
+    </div> -->
 
     <!-- Pekerjaan -->
-    <div>
+    <!-- <div>
         <label class="block text-sm font-medium text-gray-700">Pekerjaan</label>
         <input type="text" name="pekerjaan" value="{{ old('pekerjaan') }}" class="w-full p-2 border rounded-lg" placeholder="Masukkan Pekerjaan">
         @error('pekerjaan') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-    </div>
+    </div> -->
 
     <!-- Disabilitas -->
-    <div>
+    <!-- <div>
         <label class="block text-sm font-medium text-gray-700">Disabilitas</label>
         <select name="disabilitas" class="w-full p-2 border rounded-lg">
             <option value="">-- Pilih --</option>
@@ -112,7 +112,7 @@
             <option value="0" {{ old('disabilitas') == '0' ? 'selected' : '' }}>Tidak</option>
         </select>
         @error('disabilitas') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-    </div>
+    </div> -->
 
     <!-- Submit -->
     <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">
