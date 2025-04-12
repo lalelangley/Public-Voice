@@ -73,12 +73,16 @@
                 <div class="flex items-center justify-between mt-2 text-xs text-gray-600">
                     <div class="flex items-center space-x-2">
                         <span>💬 0 Komentar</span>
-                    <form action="{{ route('pengaduan.like', $p->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="hover:text-blue-600">
-                            👍 {{ $p->likes->count() }} Dukungan
-                        </button>
-                    </form>
+                        <form action="{{ route('pengaduan.like', $p->id) }}" method="POST">
+                            @csrf
+                            @php
+                                $sudahLike = $p->likes->where('masyarakat_id', auth('masyarakat')->id())->count() > 0;
+                            @endphp
+                            <button type="submit" class="text-xs px-2 py-1 rounded 
+                                {{ $sudahLike ? 'bg-red-200 text-red-800 hover:bg-red-300' : 'bg-blue-200 text-blue-800 hover:bg-blue-300' }}">
+                                {{ $sudahLike ? '💔 Batal Dukung' : '👍 Dukung' }} ({{ $p->likes->count() }})
+                            </button>
+                        </form>
                     </div>
                     <a href="#" class="flex items-center space-x-1 text-gray-700 hover:text-blue-600">
                         ⬇ Download Laporan
