@@ -23,7 +23,7 @@
             <label for="current_password" class="block font-medium">Kata Sandi Saat Ini</label>
             
             @if($isDefaultPassword)
-                <input type="text" value="****************************" readonly disabled class="w-full border p-2 rounded bg-gray-100 text-gray-600">
+                <input type="text" value="Tidak Perlu diisi" readonly disabled class="w-full border p-2 rounded bg-gray-100 text-gray-600">
                 <input type="hidden" name="current_password" value="0000000000000">
             @else
                 <input type="password" id="current_password" name="current_password" required class="w-full border p-2 rounded">

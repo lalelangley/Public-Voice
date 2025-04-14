@@ -41,7 +41,7 @@ class Masyarakat extends Authenticatable
     }
     public function getAuthIdentifierName()
     {
-        return 'email';
+        return 'id_masyarakat';
     }
 
 }

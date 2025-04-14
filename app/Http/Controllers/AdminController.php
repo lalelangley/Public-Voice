@@ -12,13 +12,13 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $role = Role::where('name', 'petugas')->first();
+        $petugas = Petugas::all(); 
     
-        if (!$role) {
-            return redirect()->route('admin.dashboard')->with('error', 'Role petugas tidak ditemukan.');
-        }
+        // if (!$role) {
+        //     return redirect()->route('admin.dashboard')->with('error', 'Role petugas tidak ditemukan.');
+        // }
     
-        $petugas = User::where('role_id', $role->id)->get();
+        $petugas = Petugas::where('level', 'petugas')->get();
     
         return view('admin.dashboard', compact('petugas'));
     }
