@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +9,8 @@ use App\Models\Pengaduan;
 use App\Models\Masyarakat;
 use Illuminate\Support\Facades\Auth;
 use App\Models\LikePengaduan;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class PengaduanController extends Controller
 {
@@ -39,43 +40,59 @@ class PengaduanController extends Controller
         return view('pengaduan.show', compact('pengaduan'));
     }
 
-    public function store(Request $request)
-    {
-        $masyarakat = Auth::guard('masyarakat')->user();
+   
+public function store(Request $request)
+{
+    $masyarakat = Auth::guard('masyarakat')->user();
 
-        if (!$masyarakat) {
-            return back()->with('error', 'Silakan login terlebih dahulu');
-        }
+    if (!$masyarakat) {
+        return back()->with('error', 'Silakan login terlebih dahulu');
+    }
 
-        $request->validate([
-            'judul' => 'required',
-            'isi_laporan' => 'required',
-            'kategori' => 'required',
-            'tanggal_kejadian' => 'required|date',
-            'lokasi_kejadian' => 'required',
-            'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+    $request->validate([
+        'judul' => 'required',
+        'isi_laporan' => 'required',
+        'kategori' => 'required',
+        'tanggal_kejadian' => 'required|date',
+        'lokasi_kejadian' => 'required',
+        'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        $fileName = null;
-        if ($request->hasFile('foto')) {
-            $fileName = $request->file('foto')->store('pengaduan', 'public');
-        }
+    $fileName = null;
+    if ($request->hasFile('foto')) {
+        $fileName = $request->file('foto')->store('pengaduan', 'public');
+    }
 
-        Pengaduan::create([
-            'id_masyarakat' => $masyarakat->id_masyarakat,
+    $divisi = null;
+    try {
+        $mlResponse = Http::post('https://ml-divisi.yourdomain.workers.dev/predict', [
             'judul' => $request->judul,
             'isi_laporan' => $request->isi_laporan,
             'kategori' => $request->kategori,
-            'foto' => $fileName,
-            'tanggal_kejadian' => $request->tanggal_kejadian,
-            'lokasi_kejadian' => $request->lokasi_kejadian,
-            'anonim' => $request->has('anonim'),
-            'status' => 'pending',
         ]);
 
-        return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
+        if ($mlResponse->successful()) {
+            $divisi = $mlResponse->json()['divisi'] ?? null;
+        }
+    } catch (\Exception $e) {
+        Log::error('ML API Error: ' . $e->getMessage());
     }
 
+    Pengaduan::create([
+        'id_masyarakat' => $masyarakat->id_masyarakat,
+        'judul' => $request->judul,
+        'isi_laporan' => $request->isi_laporan,
+        'kategori' => $request->kategori,
+        'foto' => $fileName,
+        'tanggal_kejadian' => $request->tanggal_kejadian,
+        'lokasi_kejadian' => $request->lokasi_kejadian,
+        'anonim' => $request->has('anonim'),
+        'status' => 'pending',
+        'divisi' => $divisi,
+    ]);
+
+    return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
+}
     public function like($id)
     {
         $masyarakat = Auth::guard('masyarakat')->user();
