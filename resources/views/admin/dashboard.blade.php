@@ -32,7 +32,7 @@
             <tbody>
                 @forelse($petugas as $p)
                 <tr>
-                    <td class="p-2 border">{{ $p->name }}</td>
+                    <td class="p-2 border">{{ $p->nama }}</td>
                     <td class="p-2 border">{{ $p->username }}</td>
                     <td class="p-2 border">
                         <a href="{{ route('admin.edit', $p->id) }}" class="text-blue-500 hover:underline">Edit</a> |

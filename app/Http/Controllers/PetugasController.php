@@ -19,7 +19,7 @@ class PetugasController extends Controller
     public function store(Request $request)
     {
         // Pastikan hanya admin yang bisa menambah admin
-        if (Auth::user()->level !== 'admin' && $request->level === 'admin') {
+        if (Auth::petugas()->level !== 'admin' && $request->level === 'admin') {
             return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menambahkan admin!');
         }
 

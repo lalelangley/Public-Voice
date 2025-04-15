@@ -4,26 +4,26 @@
 <div class="container mx-auto">
     <h2 class="text-2xl font-bold mb-4">Edit Petugas</h2>
 
-    <form action="{{ route('admin.update', $user->id) }}" method="POST">
+    <form action="{{ route('admin.update', $petugas->id) }}" method="POST">
         @csrf
         @method('PUT')
 
         {{-- Nama --}}
         <div class="mb-4">
             <label class="block font-semibold">Nama</label>
-            <input type="text" name="nama" value="{{ old('nama', $user->name) }}" class="border rounded px-4 py-2 w-full">
+            <input type="text" name="nama" value="{{ old('nama', $petugas->nama) }}" class="border rounded px-4 py-2 w-full">
         </div>
 
         {{-- Username --}}
         <div class="mb-4">
             <label class="block font-semibold">Username</label>
-            <input type="text" name="username" value="{{ old('username', $user->username) }}" class="border rounded px-4 py-2 w-full">
+            <input type="text" name="username" value="{{ old('username', $petugas->username) }}" class="border rounded px-4 py-2 w-full">
         </div>
 
         {{-- Email --}}
         <div class="mb-4">
             <label class="block font-semibold">Email</label>
-            <input type="email" name="email" value="{{ old('email', $user->email) }}" class="border rounded px-4 py-2 w-full">
+            <input type="email" name="email" value="{{ old('email', $petugas->email) }}" class="border rounded px-4 py-2 w-full">
         </div>
 
         {{-- Telepon --}}
