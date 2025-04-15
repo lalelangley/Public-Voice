@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\TanggapanController;
@@ -13,6 +13,8 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\LikePengaduanController;
 use App\Http\Controllers\KomentarPengaduanController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\LogTestController;
+use App\Http\Controllers\FeedbackController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -130,3 +132,23 @@ Route::get('/forgot-password/{token}', [ForgotPasswordController::class, 'showRe
 
 // Route untuk menghandle reset password (POST)
 Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
+
+Route::get('/log-test', [LogTestController::class, 'testLog']);
+Route::post('/feedback', [FeedbackController::class, 'store']);
+Route::get('/ml/status', function () {
+    $response = Http::post('https://became-employers-hybrid-sunglasses.trycloudflare.com/predict', [
+        'judul' => 'Cek status',
+        'isi_laporan' => 'Ini hanya pengujian status koneksi',
+        'kategori' => 'Cek',
+    ]);
+
+    if ($response->successful()) {
+        $data = $response->json();
+        $data['message'] = 'Machine Learning aktif dan terkoneksi!';
+        return response()->json($data);
+    }
+
+    return response()->json(['message' => 'ML API tidak merespons'], 500);
+});
+
+Route::get('/cek-ml', [App\Http\Controllers\MLController::class, 'cekStatus']);

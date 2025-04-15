@@ -13,13 +13,14 @@ class Pengaduan extends Model
         'id_masyarakat',
         'judul',
         'isi_laporan',
-        'kategori',
         'foto',
         'tanggal_kejadian',
         'lokasi_kejadian',
         'anonim',
         'status',
+        'divisi',
     ];    
+    
         public function masyarakat(){
         return $this->belongsTo(Masyarakat::class, 'id_masyarakat');
     }   
