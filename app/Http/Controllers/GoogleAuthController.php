@@ -19,49 +19,51 @@ class GoogleAuthController extends Controller
     }
 
     // Callback dari Google
-    public function callback()
-    {
-        try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+  // Callback from Google
+public function callback()
+{
+    try {
+        $googleUser = Socialite::driver('google')->user();
 
-            // Cek apakah user sudah ada
-            $masyarakat = Masyarakat::where('google_id', $googleUser->id)
-                        ->orWhere('email', $googleUser->email)
-                        ->first();
+        // Cek apakah user sudah ada
+        $masyarakat = Masyarakat::where('google_id', $googleUser->id)
+                    ->orWhere('email', $googleUser->email)
+                    ->first();
 
-                        if ($masyarakat) {
-                            // Kalau user belum punya google_id, update aja
-                            if (!$masyarakat->google_id) {
-                                $masyarakat->update(['google_id' => $googleUser->id]);
-                            }
-                        } else {
-                            // Buat user baru
-                            $masyarakat = Masyarakat::create([
-                                'nik' => Str::uuid(), // NIK unik
-                                'nama'      => $googleUser->name,
-                                'username'  => strtolower(str_replace(' ', '', $googleUser->name)) . rand(100, 999),
-                                'email'     => $googleUser->email,
-                                'password' => Hash::make('0000000000000'),
-                                'telp'      => '0000',
-                                'google_id' => $googleUser->id,
-                            ]);                        
+        if ($masyarakat) {
+            // Kalau user belum punya google_id, update aja
+            if (!$masyarakat->google_id) {
+                $masyarakat->update(['google_id' => $googleUser->id]);
             }
+        } else {
+            // Buat user baru
+            $masyarakat = Masyarakat::create([
+                'nik' => Str::uuid(), // NIK unik
+                'nama'      => $googleUser->name,
+                'username'  => strtolower(str_replace(' ', '', $googleUser->name)) . rand(100, 999),
+                'email'     => $googleUser->email,
+                'password' => Hash::make('0000000000000'),
+                'telp'      => '0000',
+                'google_id' => $googleUser->id,
+            ]);                        
+        }
 
-            // Login user
-            Auth::guard('masyarakat')->login($masyarakat);
+        // Login user
+        Auth::guard('masyarakat')->login($masyarakat);
 
-            if (Auth::guard('masyarakat')->check()) {
-                Log::info('User logged in successfully: ', (array) Auth::guard('masyarakat')->user());
-                return redirect()->route('masyarakat.dashboard')->with('success', 'Login berhasil!');
-            } else {
-                Log::error('Login gagal! User tidak berhasil login.');
-                return redirect()->route('login')->with('error', 'Login gagal!');
-            }   
-            
-        } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Gagal login dengan Google! ' . $e->getMessage());
-        }        
-    }
+        if (Auth::guard('masyarakat')->check()) {
+            Log::info('User logged in successfully: ', (array) Auth::guard('masyarakat')->user());
+            return redirect()->route('masyarakat.dashboard')->with('success', 'Login berhasil!');
+        } else {
+            Log::error('Login gagal! User tidak berhasil login.');
+            return redirect()->route('login')->with('error', 'Login gagal!');
+        }   
+
+    } catch (\Exception $e) {
+        return redirect()->route('login')->with('error', 'Gagal login dengan Google! ' . $e->getMessage());
+    }        
+}
+
 
     // Logout
     public function logout()
