@@ -41,58 +41,78 @@ class PengaduanController extends Controller
     }
 
    
-public function store(Request $request)
-{
-    $masyarakat = Auth::guard('masyarakat')->user();
+    public function store(Request $request)
+    {
+        Log::info('Mulai proses store pengaduan');
+    
+        $masyarakat = Auth::guard('masyarakat')->user();
+    
+        if (!$masyarakat) {
+            return back()->with('error', 'Silakan login terlebih dahulu');
+        }
+    
+        // Validasi dengan pesan error custom (opsional)
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'isi_laporan' => 'required|string',
+            'tanggal_kejadian' => 'required|date',
+            'lokasi_kejadian' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'judul.required' => 'Judul laporan wajib diisi.',
+            'isi_laporan.required' => 'Isi laporan tidak boleh kosong.',
+            'tanggal_kejadian.required' => 'Tanggal kejadian wajib diisi.',
+            'tanggal_kejadian.date' => 'Format tanggal kejadian tidak valid.',
+            'lokasi_kejadian.required' => 'Lokasi kejadian tidak boleh kosong.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Gambar harus berformat jpeg, png, atau jpg.',
+            'foto.max' => 'Ukuran gambar maksimal 2MB.',
+        ]);
 
-    if (!$masyarakat) {
-        return back()->with('error', 'Silakan login terlebih dahulu');
-    }
-
-    $request->validate([
-        'judul' => 'required',
-        'isi_laporan' => 'required',
-        'kategori' => 'required',
-        'tanggal_kejadian' => 'required|date',
-        'lokasi_kejadian' => 'required',
-        'foto' => 'image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    $fileName = null;
-    if ($request->hasFile('foto')) {
-        $fileName = $request->file('foto')->store('pengaduan', 'public');
-    }
-
-    $divisi = null;
-    try {
-        $mlResponse = Http::post('https://ml-divisi.yourdomain.workers.dev/predict', [
+        $fileName = null;
+        if ($request->hasFile('foto')) {
+            $fileName = $request->file('foto')->store('pengaduan', 'public');
+        }
+    
+        // Kirim ke ML API
+        $divisi = null;
+        try {
+            $mlResponse = Http::timeout(10) // Timeout dalam detik
+            ->post('https://became-employers-hybrid-sunglasses.trycloudflare.com/predict', [
+                'judul' => $request->judul,
+                'isi_laporan' => $request->isi_laporan,
+                'kategori' => $request->kategori,
+            ]);
+    
+            if ($mlResponse->successful()) {
+                Log::info('ML Response: ', $mlResponse->json());
+                $divisi = $mlResponse->json()['divisi'] ?? null;
+            } else {
+                Log::warning('ML Response tidak berhasil: ' . $mlResponse->body());
+            }
+        } catch (\Exception $e) {
+            Log::error('ML API Error: ' . $e->getMessage());
+        }
+    
+        // Simpan ke database
+        $pengaduan = Pengaduan::create([
+            'id_masyarakat' => $masyarakat->id_masyarakat,
             'judul' => $request->judul,
             'isi_laporan' => $request->isi_laporan,
             'kategori' => $request->kategori,
+            'foto' => $fileName,
+            'tanggal_kejadian' => $request->tanggal_kejadian,
+            'lokasi_kejadian' => $request->lokasi_kejadian,
+            'anonim' => $request->has('anonim'),
+            'status' => 'pending',
+            'divisi' => $divisi,
         ]);
-
-        if ($mlResponse->successful()) {
-            $divisi = $mlResponse->json()['divisi'] ?? null;
-        }
-    } catch (\Exception $e) {
-        Log::error('ML API Error: ' . $e->getMessage());
+    
+        Log::info('Pengaduan berhasil dibuat', ['id' => $pengaduan->id]);
+    
+        return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
     }
-
-    Pengaduan::create([
-        'id_masyarakat' => $masyarakat->id_masyarakat,
-        'judul' => $request->judul,
-        'isi_laporan' => $request->isi_laporan,
-        'kategori' => $request->kategori,
-        'foto' => $fileName,
-        'tanggal_kejadian' => $request->tanggal_kejadian,
-        'lokasi_kejadian' => $request->lokasi_kejadian,
-        'anonim' => $request->has('anonim'),
-        'status' => 'pending',
-        'divisi' => $divisi,
-    ]);
-
-    return redirect('/pengaduan')->with('success', 'Pengaduan berhasil dikirim');
-}
+    
     public function like($id)
     {
         $masyarakat = Auth::guard('masyarakat')->user();
