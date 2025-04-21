@@ -34,9 +34,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ========================
 Route::middleware('auth:masyarakat')->group(function () {
 
-    Route::get('/masyarakat/dashboard', function () {
-        return view('masyarakat.dashboard');
-    })->name('masyarakat.dashboard');
+    Route::get('/masyarakat/dashboard', [PengaduanController::class, 'dashboard'])->name('masyarakat.dashboard');
 
     // Pengaduan
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
