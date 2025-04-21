@@ -24,7 +24,7 @@ class PengaduanController extends Controller
             $query->where('status', $status);
         }
 
-        $pengaduan = $query->get();
+        $pengaduan = $query->paginate(9);
 
         return view('pengaduan.index', compact('pengaduan', 'status'));
     }
