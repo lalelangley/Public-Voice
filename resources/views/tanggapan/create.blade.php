@@ -51,15 +51,27 @@
                 <i class="fas fa-comment-dots mr-2"></i> Isi Tanggapan
             </div>
             <div class="p-6">
-                <form action="{{ route('tanggapan.store', ['id' => $pengaduan->id]) }}" method="POST">
+                <form action="{{ route('tanggapan.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="pengaduan_id" value="{{ $pengaduan->id }}">
-                    <div class="mb-3">
-                        <label for="tanggapan" class="form-label">Tanggapan</label>
-                        <textarea name="tanggapan" id="tanggapan" class="form-control" required></textarea>
+
+                    <div class="mb-4">
+                        <label for="tanggapan" class="block text-sm font-medium text-gray-700">Tanggapan</label>
+                        <textarea name="tanggapan" id="tanggapan" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm" rows="4" required></textarea>
                     </div>
-                
-                    <button type="submit" class="btn btn-primary">Kirim Tanggapan</button>
+
+                    <div class="mb-4">
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status Pengaduan</label>
+                        <select name="status" id="status" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <option value="pending">Pending</option>
+                            <option value="proses">Proses</option>
+                            <option value="selesai">Selesai</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Kirim Tanggapan
+                    </button>
                 </form>
             </div>
         </div>

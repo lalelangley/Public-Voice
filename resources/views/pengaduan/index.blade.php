@@ -36,15 +36,6 @@
         @endforeach
     </div>
 
-    {{-- Mapping Kategori --}}
-    @php
-        $kategoriMap = [
-            'kerusakan_fasilitas' => 'Infrastruktur',
-            'bencana_alam' => 'Lingkungan',
-            'kriminal' => 'Polisi',
-        ];
-    @endphp
-
     {{-- Notifikasi --}}
     @if(session('success'))
         <div class="bg-green-500 text-white p-4 rounded-lg mb-4 shadow-md">
@@ -163,6 +154,11 @@
                 </div>
             </div>
         @endforeach
+        {{-- Tombol Pagination --}}
+        <div class="w-full mt-8 flex justify-center">
+            {{ $pengaduan->links() }}
+        </div>
+
     </div>
 </div>
 @endsection

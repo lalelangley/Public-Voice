@@ -24,7 +24,7 @@ class PengaduanController extends Controller
             $query->where('status', $status);
         }
 
-        $pengaduan = $query->get();
+        $pengaduan = $query->paginate(9);
 
         return view('pengaduan.index', compact('pengaduan', 'status'));
     }
@@ -142,4 +142,16 @@ class PengaduanController extends Controller
         $pdf = PDF::loadView('pengaduan.pdf', compact('pengaduan'));
         return $pdf->download('Laporan-Pengaduan-' . $pengaduan->id . '.pdf');
     }
+    public function dashboard()
+    {
+        $masyarakat = Auth::guard('masyarakat')->user();
+
+        $total = Pengaduan::where('id_masyarakat', $masyarakat->id_masyarakat)->count();
+        $pending = Pengaduan::where('id_masyarakat', $masyarakat->id_masyarakat)->where('status', 'pending')->count();
+        $proses = Pengaduan::where('id_masyarakat', $masyarakat->id_masyarakat)->where('status', 'proses')->count();
+        $selesai = Pengaduan::where('id_masyarakat', $masyarakat->id_masyarakat)->where('status', 'selesai')->count();
+
+        return view('masyarakat.dashboard', compact('total', 'pending', 'proses', 'selesai'));
+    }
+
 }

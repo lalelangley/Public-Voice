@@ -7,6 +7,7 @@ use App\Models\Pengaduan;
 use App\Models\Tanggapan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
 class TanggapanController extends Controller
 {
     // Menampilkan daftar laporan yang berstatus "proses"
@@ -16,16 +17,16 @@ class TanggapanController extends Controller
                               ->where('kategori', $petugas->divisi)
                               ->get();
         return view('tanggapan.index', compact('pengaduan'));
-    }    
+    }
 
     // Menampilkan halaman detail laporan dan form tanggapan
     public function create($id) {
         $pengaduan = Pengaduan::find($id);
-        
+
         if (!$pengaduan) {
             return redirect()->route('pengaduan.index')->with('error', 'Pengaduan tidak ditemukan.');
         }
-    
+
         return view('tanggapan.create', compact('pengaduan'));
     }
 
@@ -43,7 +44,7 @@ class TanggapanController extends Controller
             $pengaduan->update(['status' => 'proses']);
             return redirect()->route('tanggapan.index')->with('success', 'Pengaduan berhasil diverifikasi!');
         }
-        
+
         return redirect()->route('tanggapan.index')->with('error', 'Pengaduan sudah diverifikasi sebelumnya!');
     }
 
@@ -51,26 +52,25 @@ class TanggapanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pengaduan_id' => 'required|exists:pengaduan,id', // Sesuaikan dengan nama tabel yang benar
+            'pengaduan_id' => 'required|exists:pengaduan,id',
             'tanggapan' => 'required',
+            'status' => 'required|in:pending,proses,selesai', // validasi status
         ]);
-    
-        // Simpan tanggapan baru
+
+        // Simpan tanggapan
         Tanggapan::create([
             'pengaduan_id' => $request->pengaduan_id,
             'tanggapan' => $request->tanggapan,
             'tgl_tanggapan' => now(),
             'id_petugas' => Auth::guard('petugas')->id(),
         ]);
-    
-        // **Update status pengaduan jadi "selesai"**
-        $pengaduan = DB::table('pengaduan')->where('id', $request->pengaduan_id)->first();
-        if ($pengaduan) {
-            DB::table('pengaduan')->where('id', $request->pengaduan_id)->update(['status' => 'selesai']);
-        }
-    
+
+        // Update status pengaduan sesuai input
+        DB::table('pengaduan')
+            ->where('id', $request->pengaduan_id)
+            ->update(['status' => $request->status]);
+
         return redirect()->route('tanggapan.show', $request->pengaduan_id)
             ->with('success', 'Tanggapan berhasil dikirim dan status diperbarui.');
     }
-    
 }

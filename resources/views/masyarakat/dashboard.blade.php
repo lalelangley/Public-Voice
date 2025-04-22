@@ -33,4 +33,67 @@
         </form>
     </div>
 </div>
+
+<div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="p-4 bg-blue-100 rounded shadow">
+        <h2 class="text-xl font-semibold text-blue-800">Total Pengaduan</h2>
+        <p class="text-2xl font-bold text-blue-900">{{ $total }}</p>
+    </div>
+    <div class="p-4 bg-yellow-100 rounded shadow">
+        <h2 class="text-xl font-semibold text-yellow-800">Pending</h2>
+        <p class="text-2xl font-bold text-yellow-900">{{ $pending }}</p>
+    </div>
+    <div class="p-4 bg-orange-100 rounded shadow">
+        <h2 class="text-xl font-semibold text-orange-800">Diproses</h2>
+        <p class="text-2xl font-bold text-orange-900">{{ $proses }}</p>
+    </div>
+    <div class="p-4 bg-green-100 rounded shadow">
+        <h2 class="text-xl font-semibold text-green-800">Selesai</h2>
+        <p class="text-2xl font-bold text-green-900">{{ $selesai }}</p>
+    </div>
+</div>
+
+<div class="mt-10 bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Grafik Pengaduan</h2>
+    <canvas id="pengaduanChart" height="120"></canvas>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('pengaduanChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Pending', 'Proses', 'Selesai'],
+            datasets: [{
+                label: 'Jumlah Pengaduan',
+                data: [{{ $pending }}, {{ $proses }}, {{ $selesai }}],
+                backgroundColor: [
+                    'rgba(253, 224, 71, 0.7)', // kuning
+                    'rgba(251, 146, 60, 0.7)', // oranye
+                    'rgba(34, 197, 94, 0.7)'   // hijau
+                ],
+                borderColor: [
+                    'rgba(202, 138, 4, 1)',
+                    'rgba(194, 65, 12, 1)',
+                    'rgba(22, 163, 74, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+</script>
+
 @endsection
