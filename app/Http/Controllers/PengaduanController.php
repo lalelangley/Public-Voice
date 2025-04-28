@@ -17,6 +17,11 @@ class PengaduanController extends Controller
     public function index(Request $request)
     {
         $status = $request->query('status'); // Ambil filter status dari URL
+        $kategori = $request->query('kategori');
+        $tahun = $request->query('tahun');
+        $bulan = $request->query('bulan');
+        $search = $request->query('search');
+        $sort = $request->query('sort');
 
         $query = Pengaduan::with(['tanggapan.petugas', 'masyarakat', 'likes', 'komentar.masyarakat']);
 
@@ -24,9 +29,39 @@ class PengaduanController extends Controller
             $query->where('status', $status);
         }
 
-        $pengaduan = $query->paginate(9);
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+    
+        if ($tahun) {
+            $query->whereYear('created_at', $tahun);
+        }
+    
+        if ($bulan) {
+            $query->whereMonth('created_at', $bulan);
+        }
+    
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'LIKE', "%$search%")
+                  ->orWhere('isi_laporan', 'LIKE', "%$search%");
+            });
+        }
+    
+        if ($sort == 'like') {
+            $query->withCount('likes')->orderByDesc('likes_count');
+        } elseif ($sort == 'komentar') {
+            $query->withCount('komentar')->orderByDesc('komentar_count');
+        } elseif ($sort == 'baru') {
+            $query->orderByDesc('created_at');
+        } elseif ($sort == 'lama') {
+            $query->orderBy('created_at');
+        }
 
-        return view('pengaduan.index', compact('pengaduan', 'status'));
+        $pengaduan = $query->paginate(9);
+        $kategoriList = Pengaduan::select('kategori')->distinct()->pluck('kategori');
+
+        return view('pengaduan.index', compact('pengaduan', 'status', 'kategoriList'));
     }
 
     public function create()
